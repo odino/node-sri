@@ -54,6 +54,27 @@ or try running it with `node example.js`.
 After cloning and doing an `npm install` you can
 simply run `npm test` and...   ...welcome to greenland!
 
+```
+~/projects/node-sri (master ✔) ᐅ npm test
+
+> node-sri@1.0.0 test /home/odino/projects/node-sri
+> ./node_modules/mocha/bin/mocha
+
+
+
+  sri
+    #hash()
+      ✓ should return a promise when called without callback
+      ✓ should return an hash when generating an sri for an existing file
+      ✓ should return an error when generating an sri for a non existing file
+      ✓ should use a callback when passed
+      ✓ should return an hash when generating an sri for an existing file with a callback
+      ✓ should return an error when generating an sri for a non existing file with a callback
+
+
+  6 passing (56ms)
+```
+
 ## Useful resources
 
 * [SRI specification](http://www.w3.org/TR/SRI/)
