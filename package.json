@@ -1,0 +1,20 @@
+{
+  "name": "node-sri",
+  "version": "0.9.9",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
+  "keywords": [
+    "swag",
+    "sri",
+    "subresource",
+    "integrity"
+  ],
+  "author": "alessandro.nadalin <alessandro.nadalin@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^2.3.3"
+  }
+}
