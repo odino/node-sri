@@ -20,11 +20,11 @@ function hash(file, cb) {
   }
 
   var p = new Promise(function(resolve, reject){
-    exec(`cat ${options.file} | openssl dgst -${options.algo} -binary | openssl enc -base64 -A`, function (error, stdout, stderr) {
+    exec('cat ' + options.file + ' | openssl dgst -' + options.algo + ' -binary | openssl enc -base64 -A', function (error, stdout, stderr) {
         if (error || stderr !== '') {
           reject(error || stderr)
         } else {
-          resolve(options.prefix ? `${options.algo}-${stdout}` : stdout)
+          resolve(options.prefix ? options.algo + '-' + stdout : stdout)
         }
     });
   })
