@@ -5,12 +5,15 @@ implement [sub-resource integrity](https://developer.mozilla.org/en-US/docs/Web/
 
 ## Installation
 
-Simply do an `npm install node-sri` and include it
+Simply do an `npm install --save node-sri` and include it
 in your code:
 
 ``` javascript
 var sri = require('node-sri')
 ```
+
+Be aware that you will need to have [openssl installed](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity#Tools_for_generating_SRI_hashes)
+on the system.
 
 ## Usage
 
