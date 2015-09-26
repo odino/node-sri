@@ -44,10 +44,40 @@ sri.hash('/path/to/my/file.js').then(function(hash){
 })
 ```
 
+By default, it will use `sha256` to generate hashes
+but you can configure it to use whatever algorithm,
+using options rather than a filename as first argument
+of the hash function:
+
+``` javascript
+sri.hash({file: '/path/to/my/file.js', algo: 'sha512'}) // sha512-z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==
+```
+
+Hashes will be prepended with the algorithm (ie. `sha256-...`) but
+you can also use the `prefix` option to remove the prefix:
+
+``` javascript
+sri.hash({file: '/path/to/my/file.js', algo: 'sha512', prefix: false}) // z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==
+```
+
 ## Examples
 
 See [example.js](https://github.com/odino/node-sri/blob/master/example.js)
-or try running it with `node example.js`.
+or try running it with `node example.js`:
+
+```
+~/projects/node-sri (master ✘)✹ ᐅ node example.js
+Generating SRI hash for the package.json...
+Generating SRI hash for the README.md...
+Generating SRI hash for a file that doesn't exist...
+Generating SRI hash for the package.json with SHA512...
+Generating SRI hash for the package.json with SHA512 without the prefix...
+README.md's hash is sha256-IQW2dfoEDMp/r7nf9Au0lTkTIWYXLLrObNwVO3LUWzc=
+package.json's hash is sha256-NsbsCsoAeBPs3qxHKaM6GMX7MfBTuoF+lbI8WWXN+Ys=
+package.json's SHA512 hash without the prefix is 5aK2wlSasZymZfq7y2ffJtjFnmkiEZELIWSn0iusYBxJ32pflmCOV3xRfoSBQP/kLQGh/Paqp0Ia7N0EkuhMAA==
+package.json's SHA512 hash is sha512-5aK2wlSasZymZfq7y2ffJtjFnmkiEZELIWSn0iusYBxJ32pflmCOV3xRfoSBQP/kLQGh/Paqp0Ia7N0EkuhMAA==
+We got this error when generating an SRI hash for a file that doesnt exist: cat: /YOLO!: No such file or directory
+```
 
 ## Tests
 

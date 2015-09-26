@@ -1,7 +1,7 @@
 {
   "name": "node-sri",
   "version": "1.0.2",
-  "description": "",
+  "description": "A simple module to generate SRI hashes out of files and implement sub-resource integrity",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha"
