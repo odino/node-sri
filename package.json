@@ -18,6 +18,10 @@
   ],
   "author": "alessandro.nadalin <alessandro.nadalin@gmail.com>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/odino/node-sri/issues"
+  },
+  "homepage": "https://github.com/odino/node-sri",
   "devDependencies": {
     "mocha": "^2.3.3"
   }
