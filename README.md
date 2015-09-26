@@ -17,9 +17,35 @@ on the system.
 
 ## Usage
 
+Using the module is pretty straightforward, as you can use it
+both with callbacks:
+
+``` javascript
+var sri = require('node-sri')
+
+sri.hash('/path/to/my/file.js', function(err, hash){
+  if (err) throw err
+
+  console.log('My hash is', hash)
+})
+```
+
+and, if you fancy, with promises:
+
+``` javascript
+var sri = require('node-sri')
+
+sri.hash('/path/to/my/file.js').then(function(hash){
+  console.log('My hash is', hash)
+}).catch(function(err){
+  console.log('ouch!', err)
+})
+```
+
 ## Examples
 
-See example.js or try running it with `node example.js`.
+See [example.js](https://github.com/odino/node-sri/blob/master/example.js)
+or try running it with `node example.js`.
 
 ## Tests
 
