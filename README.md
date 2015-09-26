@@ -1,5 +1,7 @@
 # node-sri
 
+[![Build Status](https://travis-ci.org/odino/node-sri.svg)](https://travis-ci.org/odino/node-sri)
+
 A simple module to generate SRI hashes out of files and
 implement [sub-resource integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity).
 
