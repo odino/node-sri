@@ -39,7 +39,8 @@ describe('sri', function() {
 
     it('should return an error when generating an sri for a non existing file with a callback', function (done) {
       sri.hash('fixtures/nooooooo.js', function(err, hash){
-        assert.strictEqual("cat: fixtures/nooooooo.js: No such file or directory\n", err)
+        assert(err instanceof Error)
+        assert.strictEqual("cat: fixtures/nooooooo.js: No such file or directory\n", err.message)
         assert.strictEqual(undefined, hash)
         done()
       })

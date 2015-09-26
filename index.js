@@ -22,7 +22,7 @@ function hash(file, cb) {
     p.then(function(hash){
       cb(null, hash)
     }).catch(function(err){
-      cb(err, undefined)
+      cb(new Error(err), undefined)
     })
   } else {
     return p
@@ -31,7 +31,7 @@ function hash(file, cb) {
 
 /**
  * Public API
- * 
+ *
  * @type {Object}
  */
 module.exports = {
