@@ -1,4 +1,18 @@
-var exec = require('child_process').exec;
+const fs = require('fs');
+const crypto = require('crypto');
+
+function buildOptions(fileOrOptions) {
+  const defaults = {
+    algo: 'sha256',
+    prefix: true
+  };
+
+  if (typeof fileOrOptions === 'object') {
+    return Object.assign({}, defaults, fileOrOptions);
+  }
+
+  return Object.assign({}, defaults, { file: fileOrOptions });
+}
 
 /**
  * Creates a SRI hash of the given file
@@ -8,35 +22,25 @@ var exec = require('child_process').exec;
  * @return {Mixed}    Returns a promise if no callback was provided
  */
 function hash(file, cb) {
-  var options = {
-    algo: 'sha256',
-    prefix: true
-  }
+  const options = buildOptions(file);
 
-  if (typeof file === 'object') {
-    for (var prop in file) { options[prop] = file[prop]; }
-  } else {
-    options.file = file
-  }
-
-  var p = new Promise(function(resolve, reject){
-    exec('cat ' + options.file + ' | openssl dgst -' + options.algo + ' -binary | openssl enc -base64 -A', function (error, stdout, stderr) {
-        if (error || stderr !== '') {
-          reject(error || stderr)
-        } else {
-          resolve(options.prefix ? options.algo + '-' + stdout : stdout)
-        }
+  const promised = new Promise((resolve, reject) => {
+    fs.readFile(options.file, (error, data) => {
+      if (error) {
+        return reject(error || stderr);
+      }
+      const sha = crypto.createHash(options.algo).update(data).digest('base64');
+      const integrity = options.prefix ? `${options.algo}-${sha}` : sha;
+      return resolve(integrity);
     });
-  })
+  });
 
   if (typeof cb === 'function') {
-    p.then(function(hash){
-      cb(null, hash)
-    }).catch(function(err){
-      cb(new Error(err), undefined)
-    })
+    promised
+      .then((hash) => cb(null, hash))
+      .catch((error) => cb(new Error(error)));
   } else {
-    return p
+    return promised;
   }
 }
 
@@ -46,5 +50,5 @@ function hash(file, cb) {
  * @type {Object}
  */
 module.exports = {
-  hash: hash
+  hash
 }
