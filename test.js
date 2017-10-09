@@ -1,66 +1,76 @@
-var assert = require("assert")
-var sri  = require('./index')
+const assert = require('assert');
+const sinon = require('sinon');
+const sri  = require('./index');
 
-describe('sri', function() {
-  describe('#hash()', function () {
-    it('should return a promise when called without callback', function () {
-      assert(typeof sri.hash('/hello').then === 'function');
+describe('SRI', () => {
+  describe('#hash()', () => {
+    describe('Promise API', () => {
+      it('should return a promise when called without callback', () => {
+        assert(typeof sri.hash('fixtures/sample.js').then === 'function');
+      });
+
+      it('should return an hash when generating an sri for an existing file', () => {
+        return sri.hash('fixtures/sample.js')
+          .then((hash) => {
+            assert.strictEqual('sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=', hash);
+          });
+      });
+
+      it('should accept an option to not return the algo in the hash', () => {
+        const options = {
+          file: 'fixtures/sample.js',
+          prefix: false
+        };
+
+        return sri.hash(options)
+          .then((hash) => {
+            assert.strictEqual('47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=', hash);
+          });
+      });
+
+      it('should accept an option to use different algorithms', () => {
+        const options = {
+          file: 'fixtures/sample.js',
+          algo: 'sha512'
+        };
+
+        return sri.hash(options)
+          .then((hash) => {
+            assert.strictEqual('sha512-z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==', hash);
+          });
+      });
+
+      it('should return an error when generating an sri for a non existing file', () => {
+        return sri.hash('fixtures/nooooooo.js')
+          .catch((error) => {
+            assert.strictEqual(error.errno,  -2);
+            assert.strictEqual(error.code,  'ENOENT');
+            assert.strictEqual(error.syscall,  'open');
+          });
+      });
     });
 
-    it('should return an hash when generating an sri for an existing file', function (done) {
-      sri.hash('fixtures/sample.js').then(function(hash){
-        assert.strictEqual('sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=', hash)
-        done()
-      }).catch(function(err){
-        console.log(err)
-      })
-    });
+    describe('Callback API', () => {
+      it('should use a callback when passed', () => {
+        assert(sri.hash('/hello', function(){}) === undefined);
+      });
 
-    it('should accept an option to not return the algo in the hash', function (done) {
-      sri.hash({file: 'fixtures/sample.js', prefix: false}).then(function(hash){
-        assert.strictEqual('47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=', hash)
-        done()
-      }).catch(function(err){
-        console.log(err)
-      })
-    });
+      it('should return an hash when generating an sri for an existing file with a callback', (done) => {
+        sri.hash('fixtures/sample.js', (error, hash) => {
+          assert.strictEqual('sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=', hash);
+          assert.strictEqual(null, error);
+          done()
+        });
+      });
 
-    it('should accept an option to use different algorithms', function (done) {
-      sri.hash({file: 'fixtures/sample.js', algo: 'sha512'}).then(function(hash){
-        assert.strictEqual('sha512-z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==', hash)
-        done()
-      }).catch(function(err){
-        console.log(err)
-      })
-    });
-
-    it('should return an error when generating an sri for a non existing file', function (done) {
-      sri.hash('fixtures/nooooooo.js').catch(function(err){
-        assert.strictEqual("cat: fixtures/nooooooo.js: No such file or directory\n", err)
-        done()
-      })
-    });
-
-    it('should use a callback when passed', function () {
-      assert(sri.hash('/hello', function(){}) === undefined);
-    });
-
-    it('should return an hash when generating an sri for an existing file with a callback', function (done) {
-      sri.hash('fixtures/sample.js', function(err, hash){
-        assert.strictEqual('sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=', hash)
-        assert.strictEqual(null, err)
-        done()
-      })
-    });
-
-
-    it('should return an error when generating an sri for a non existing file with a callback', function (done) {
-      sri.hash('fixtures/nooooooo.js', function(err, hash){
-        assert(err instanceof Error)
-        assert.strictEqual("cat: fixtures/nooooooo.js: No such file or directory\n", err.message)
-        assert.strictEqual(undefined, hash)
-        done()
-      })
+      it('should return an error when generating an sri for a non existing file with a callback', (done) => {
+        sri.hash('fixtures/nooooooo.js', (error, hash) => {
+          assert(error instanceof Error);
+          assert.strictEqual('Error: ENOENT: no such file or directory, open \'fixtures/nooooooo.js\'', error.message);
+          assert.strictEqual(undefined, hash);
+          done();
+        });
+      });
     });
   });
 });

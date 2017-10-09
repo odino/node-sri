@@ -11,7 +11,7 @@ Simply do an `npm install --save node-sri` and include it
 in your code:
 
 ``` javascript
-var sri = require('node-sri')
+const sri = require('node-sri');
 ```
 
 Be aware that you will need to have [openssl installed](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity#Tools_for_generating_SRI_hashes)
@@ -23,25 +23,27 @@ Using the module is pretty straightforward, as you can use it
 both with callbacks:
 
 ``` javascript
-var sri = require('node-sri')
+const sri = require('node-sri');
 
-sri.hash('/path/to/my/file.js', function(err, hash){
-  if (err) throw err
+sri.hash('/path/to/my/file.js', (err, hash) => {
+  if (err) throw err;
 
-  console.log('My hash is', hash)
-})
+  console.log('My hash is', hash);
+});
 ```
 
 and, if you fancy, with promises:
 
 ``` javascript
-var sri = require('node-sri')
+const sri = require('node-sri');
 
-sri.hash('/path/to/my/file.js').then(function(hash){
-  console.log('My hash is', hash)
-}).catch(function(err){
-  console.log('ouch!', err)
-})
+sri.hash('/path/to/my/file.js');
+  .then((hash) => {
+    console.log('My hash is', hash);
+  })
+  .catch((err) => {
+    console.log('ouch!', err);
+  });
 ```
 
 By default, it will use `sha256` to generate hashes
@@ -50,14 +52,14 @@ using options rather than a filename as first argument
 of the hash function:
 
 ``` javascript
-sri.hash({file: '/path/to/my/file.js', algo: 'sha512'}) // sha512-z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==
+sri.hash({file: '/path/to/my/file.js', algo: 'sha512'}); // sha512-z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==
 ```
 
 Hashes will be prepended with the algorithm (ie. `sha256-...`) but
 you can also use the `prefix` option to remove the prefix:
 
 ``` javascript
-sri.hash({file: '/path/to/my/file.js', algo: 'sha512', prefix: false}) // z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==
+sri.hash({file: '/path/to/my/file.js', algo: 'sha512', prefix: false}); // z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==
 ```
 
 ## Examples
@@ -72,11 +74,11 @@ Generating SRI hash for the README.md...
 Generating SRI hash for a file that doesn't exist...
 Generating SRI hash for the package.json with SHA512...
 Generating SRI hash for the package.json with SHA512 without the prefix...
-README.md's hash is sha256-IQW2dfoEDMp/r7nf9Au0lTkTIWYXLLrObNwVO3LUWzc=
-package.json's hash is sha256-NsbsCsoAeBPs3qxHKaM6GMX7MfBTuoF+lbI8WWXN+Ys=
-package.json's SHA512 hash without the prefix is 5aK2wlSasZymZfq7y2ffJtjFnmkiEZELIWSn0iusYBxJ32pflmCOV3xRfoSBQP/kLQGh/Paqp0Ia7N0EkuhMAA==
-package.json's SHA512 hash is sha512-5aK2wlSasZymZfq7y2ffJtjFnmkiEZELIWSn0iusYBxJ32pflmCOV3xRfoSBQP/kLQGh/Paqp0Ia7N0EkuhMAA==
-We got this error when generating an SRI hash for a file that doesnt exist: cat: /YOLO!: No such file or directory
+We got this error when generating an SRI hash for a file that doesnt exist: { Error: ENOENT: no such file or directory, open '/YOLO!' errno: -2, code: 'ENOENT', syscall: 'open', path: '/YOLO!' }
+package.json's hash is sha256-dPHYQKpcwKgYwpMDIp52UOs6HKts198bnbgax31KMLM=
+README.md's hash is sha256-c/QjnsPdnu+IFXFUA/BJVTGmCdsu5ZcccjrcLNeAEcI=
+package.json's SHA512 hash is sha512-VfiX60lnMl59PNrSI2eJP5ccYHjYYhKf9Ri7ZCP7UQik5M0C9UCsC7o3zdBl2TFiWCklUwBYqZl0PQC8UGiMMg==
+package.json's SHA512 hash without the prefix is VfiX60lnMl59PNrSI2eJP5ccYHjYYhKf9Ri7ZCP7UQik5M0C9UCsC7o3zdBl2TFiWCklUwBYqZl0PQC8UGiMMg==
 ```
 
 ## Tests
@@ -90,19 +92,21 @@ simply run `npm test` and...   ...welcome to greenland!
 > node-sri@1.0.0 test /home/odino/projects/node-sri
 > ./node_modules/mocha/bin/mocha
 
-
-
-  sri
+  SRI
     #hash()
-      ✓ should return a promise when called without callback
-      ✓ should return an hash when generating an sri for an existing file
-      ✓ should return an error when generating an sri for a non existing file
-      ✓ should use a callback when passed
-      ✓ should return an hash when generating an sri for an existing file with a callback
-      ✓ should return an error when generating an sri for a non existing file with a callback
+      Promise API
+        ✓ should return a promise when called without callback
+        ✓ should return an hash when generating an sri for an existing file
+        ✓ should accept an option to not return the algo in the hash
+        ✓ should accept an option to use different algorithms
+        ✓ should return an error when generating an sri for a non existing file
+      Callback API
+        ✓ should use a callback when passed
+        ✓ should return an hash when generating an sri for an existing file with a callback
+        ✓ should return an error when generating an sri for a non existing file with a callback
 
 
-  6 passing (56ms)
+  8 passing (13ms)
 ```
 
 ## Useful resources
